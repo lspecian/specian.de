@@ -12,6 +12,8 @@ projects = [
 ]
 +++
 
-I'm a Staff Site Reliability Engineer based in Berlin, and I've been building software for more than 25 years. I started on C++ telephone switches at NEC, then worked on J2EE systems wired into bank mainframes. After that I co-founded and ran tech at several startups, and spent the last several years doing SRE in fintech and e-commerce: OLX, Trade Republic, Billie, and now Shopware.
+I'm a Staff Site Reliability Engineer based in Berlin, and I've been building software for more than 25 years. I started at e-Builders, a small company I ran with my dad, where I built an e-commerce site in ASP. Then I spent a few years at a CRM and advertising agency, building web systems and running their IT infrastructure. At NEC I wrote a Linux kernel driver for a PCI I/O board that emulated the Pertec tape protocol, so the old tape drives on digital telephone exchanges still running across Brazil could be replaced. Later I customized VoIP switching equipment in C++.
+
+After that came J2EE systems wired into bank mainframes, several startups that I co-founded or ran tech for, and the last several years doing SRE in fintech and e-commerce: OLX, Trade Republic, Billie, and now Shopware.
 
 This is where I write about what I learn along the way: reliability engineering, systems and software architecture, the production-grade homelab I run at home (Dell R630s with Tesla P4s, MAAS, MicroK8s, PowerDNS), and the infrastructure behind AI systems.
