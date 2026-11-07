@@ -1,0 +1,98 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  ZOLA_VERSION: v0.23.6
+  ZOLA_SHA256: 8f5132b3522412d04e395e0b25f6d68613ad272a873e54a2b3ebf664873024a4
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Zola
+        run: |
+          curl -fsSL -o zola.tgz \
+            "https://github.com/getzola/zola/releases/download/${ZOLA_VERSION}/zola-${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          echo "${ZOLA_SHA256}  zola.tgz" | sha256sum -c -
+          tar -xzf zola.tgz -C /usr/local/bin zola
+          zola --version
+
+      - name: Check links (internal)
+        run: zola check --skip-external-links
+
+      - name: Build
+        run: zola build
+
+      - name: Guard against inline scripts/styles (CSP is strict)
+        run: |
+          # Zola's page/1 redirect stubs are handled by a 301 in nginx.
+          if grep -rlE '<script|<[a-z][^>]* style=' public --include='*.html' | grep -v '/page/1/index.html$'; then
+            echo "::error::Inline script/style found; it will be blocked by the CSP on specian.de"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: public
+          path: public
+          retention-days: 7
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    environment:
+      name: production
+      url: https://specian.de
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: public
+          path: public
+
+      - name: Configure SSH
+        # DEPLOY_HOST_KEY is the pinned known_hosts line for the server. If the
+        # server is rebuilt, update it: ssh-keyscan -t ed25519 <host>
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST_KEY: ${{ secrets.DEPLOY_HOST_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_HOST_KEY" > ~/.ssh/known_hosts
+
+      - name: Rsync to server
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        # The server-side key is forced to `rrsync /var/www/specian.de`, so the
+        # remote path is relative to the web root. --delay-updates makes the
+        # switch close to atomic; --delete removes pages that no longer exist.
+        run: |
+          rsync -rlz --checksum --delete --delay-updates \
+            --chmod=D755,F644 \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" \
+            public/ "deploy@${DEPLOY_HOST}:./"
+
+      - name: Smoke test
+        run: |
+          set -e
+          for url in https://specian.de/ https://specian.de/blog/ https://specian.de/atom.xml; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url")
+            echo "$code $url"
+            [ "$code" = "200" ]
+          done

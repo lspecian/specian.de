@@ -1,0 +1,36 @@
+base_url = "https://specian.de"
+title = "Luis Specian"
+description = "Engineering notes on reliability, systems and software architecture, homelab infrastructure and AI infrastructure."
+default_language = "en"
+author = "Luis Specian"
+
+compile_sass = false
+minify_html = true
+build_search_index = false
+
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+
+taxonomies = [
+  { name = "tags", feed = true },
+]
+
+[markdown]
+smart_punctuation = true
+external_links_target_blank = false
+external_links_no_follow = false
+bottom_footnotes = true
+
+[link_checker]
+skip_prefixes = ["https://www.linkedin.com/"]
+
+[extra]
+tagline = "Staff SRE · systems, infrastructure & AI"
+github = "https://github.com/lspecian"
+linkedin = "https://www.linkedin.com/in/lspecian"
+
+[markdown.highlighting]
+light_theme = "github-light"
+dark_theme = "github-dark"
+style = "class"
+error_on_missing_language = true

@@ -1,0 +1,13 @@
+{% component post_list(pages) %}
+<ul class="post-list">
+  {% for p in pages %}
+  <li>
+    <time datetime="{{ p.date }}">{{ p.date | date(format="%Y-%m-%d") }}</time>
+    <div>
+      <a href="{{ p.permalink | safe }}">{{ p.title }}</a>
+      {% if p.description %}<p>{{ p.description }}</p>{% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endcomponent post_list %}

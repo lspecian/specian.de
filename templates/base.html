@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+  <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
+  <meta name="author" content="{{ config.author }}">
+  <link rel="canonical" href="{{ current_url | default(value=config.base_url) | safe }}">
+  <link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml', trailing_slash=false) }}">
+  <link rel="stylesheet" href="{{ get_url(path='style.css', cachebust=true) }}">
+  <link rel="stylesheet" href="{{ get_url(path='giallo-light.css') }}" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="{{ get_url(path='giallo-dark.css') }}" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="{{ get_url(path='favicon.svg') }}" type="image/svg+xml">
+  <meta property="og:site_name" content="{{ config.title }}">
+  <meta property="og:url" content="{{ current_url | default(value=config.base_url) | safe }}">
+  {% block og %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ config.title }}">
+  <meta property="og:description" content="{{ config.description }}">
+  {% endblock og %}
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="wrap nav">
+      <a class="brand" href="{{ get_url(path='/') }}">Luis Specian</a>
+      <ul>
+        <li><a href="{{ get_url(path='@/blog/_index.md') }}"{% if current_path and current_path is starting_with(pat="/blog") %} aria-current="page"{% endif %}>Writing</a></li>
+        <li><a href="{{ get_url(path='@/about.md') }}"{% if current_path == "/about/" %} aria-current="page"{% endif %}>About</a></li>
+        <li><a href="{{ get_url(path='atom.xml', trailing_slash=false) }}">RSS</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="wrap">
+    {% block content %}{% endblock content %}
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>
+      © {{ now() | date(format="%Y") }} Luis Specian ·
+      <a href="{{ config.extra.github }}">GitHub</a> ·
+      <a href="{{ config.extra.linkedin }}">LinkedIn</a> ·
+      <a href="{{ get_url(path='atom.xml', trailing_slash=false) }}">RSS</a>
+    </p>
+    <p class="muted">Built with Zola, served from a box I run myself.</p>
+  </footer>
+</body>
+</html>

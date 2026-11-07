@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="intro">
+  <h1>{{ section.title }}</h1>
+  <p class="tagline">{{ config.extra.tagline }}</p>
+  {{ section.content | safe }}
+</section>
+
+{% set blog = get_section(path="blog/_index.md") %}
+<section>
+  <h2>Recent writing</h2>
+  {% if blog.pages | length > 0 %}
+    {{ <post_list pages={blog.pages[:5]} /> }}
+    <p><a href="{{ blog.permalink | safe }}">All posts →</a></p>
+  {% else %}
+    <p class="muted">First posts are on their way.</p>
+  {% endif %}
+</section>
+
+{% if section.extra.projects %}
+<section>
+  <h2>Things I'm building</h2>
+  <ul class="projects">
+    {% for pr in section.extra.projects %}
+    <li>
+      <a href="{{ pr.url }}">{{ pr.name }}</a>
+      <span class="lang">{{ pr.lang }}</span>
+      <p>{{ pr.desc }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endblock content %}
