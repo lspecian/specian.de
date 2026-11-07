@@ -26,7 +26,8 @@ I'm Luis, a Site Reliability Engineer in Berlin. I care about systems that stay 
 | 2018–2019 | Banco Votorantim | Full-stack DevOps developer |
 | 2016–2018 | Conube | CTO: platform rebuild, Azure → AWS |
 | 2014–2016 | Eyso, Esponsa, ProTalk | Co-founder / CTO |
-| 2007–2014 | Masterdom, Carriers Interconnect, BSI | J2EE: government systems, Telefônica R&D, Itaú mainframe integration |
+| 2008–2014 | Masterdom (consultant at Prodesp) | J2EE/WebSphere systems for the São Paulo state judiciary |
+| 2007–2008 | Carriers Interconnect, BSI Tecnologia | J2EE: Telefônica R&D, Itaú mainframe integration |
 | 2004–2007 | NEC Latin America | Linux kernel driver for a Pertec tape emulator on telephone exchanges; C++ on VoIP switching |
 | 2001–2004 | Diretotal / BBN Brasil | CRM and contact-center web systems; ran the company's IT infrastructure |
 | 1999–2000 | e-Builders | Founded with my dad: e-commerce in ASP |
